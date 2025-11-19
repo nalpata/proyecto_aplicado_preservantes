@@ -5,7 +5,6 @@ Usa sentence-transformers para embeddings.
 """
 
 import chromadb
-from chromadb.config import Settings
 from sentence_transformers import SentenceTransformer
 from typing import List, Dict, Any, Tuple
 import os
@@ -28,13 +27,8 @@ class VectorDatabase:
         # Crear carpeta si no existe
         os.makedirs(db_path, exist_ok=True)
         
-        # Inicializar cliente de Chroma
-        settings = Settings(
-            chroma_db_impl="duckdb+parquet",
-            persist_directory=db_path,
-            anonymized_telemetry=False,
-        )
-        self.client = chromadb.Client(settings)
+        # Inicializar cliente de Chroma (nueva API)
+        self.client = chromadb.PersistentClient(path=db_path)
         
         # Cargar modelo de embeddings
         print(f"Cargando modelo: {model_name}")
@@ -159,6 +153,6 @@ class VectorDatabase:
         print("✓ Colección eliminada")
     
     def persist(self) -> None:
-        """Persiste los cambios a disco."""
-        self.client.persist()
-        print("✓ Base de datos persistida")
+        """Persiste los cambios a disco (automático en PersistentClient)."""
+        # Con PersistentClient, los cambios se persisten automáticamente
+        print("✓ Base de datos persistida automáticamente")

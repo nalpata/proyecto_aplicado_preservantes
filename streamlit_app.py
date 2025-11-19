@@ -53,36 +53,92 @@ st.markdown("**Pipeline RAG para recomendaciones de alternativas naturales a con
 # Sidebar
 with st.sidebar:
     st.header("⚙️ Configuración")
-    
+
     pdf_folder = st.text_input(
         "Carpeta con PDFs",
         value="data/pdfs",
         help="Ruta relativa o absoluta a la carpeta con archivos PDF"
     )
-    
+
+    st.divider()
+    st.subheader("🔍 Filtrado de Contenido")
+
+    filter_sections = st.checkbox(
+        "Filtrar secciones de bajo valor",
+        value=True,
+        help="Remueve referencias, tablas, agradecimientos, etc."
+    )
+
+    if filter_sections:
+        st.caption("Secciones a filtrar:")
+
+        remove_references = st.checkbox(
+            "📚 Referencias bibliográficas",
+            value=True,
+            help="Elimina secciones de referencias y bibliografía"
+        )
+
+        remove_tables = st.checkbox(
+            "📊 Tablas",
+            value=True,
+            help="Elimina tablas detectadas en el texto"
+        )
+
+        remove_acknowledgments = st.checkbox(
+            "🙏 Agradecimientos",
+            value=True,
+            help="Elimina secciones de agradecimientos"
+        )
+
+        remove_appendix = st.checkbox(
+            "📎 Apéndices",
+            value=True,
+            help="Elimina apéndices y anexos"
+        )
+
+        remove_headers_footers = st.checkbox(
+            "📄 Headers/Footers",
+            value=True,
+            help="Elimina encabezados y pies de página"
+        )
+    else:
+        remove_references = False
+        remove_tables = False
+        remove_acknowledgments = False
+        remove_appendix = False
+        remove_headers_footers = False
+
+    st.divider()
+    st.subheader("✂️ Chunking")
+
     chunk_size = st.slider(
         "Tamaño de chunk (caracteres)",
         min_value=200,
         max_value=1500,
         value=500,
-        step=100
+        step=100,
+        help="Tamaño aproximado de cada chunk (se respetan límites de párrafo/oración)"
     )
-    
+
     overlap = st.slider(
         "Solapamiento entre chunks",
         min_value=0,
         max_value=200,
         value=50,
-        step=10
+        step=10,
+        help="Caracteres de overlap inteligente entre chunks consecutivos"
     )
-    
+
+    st.divider()
+    st.subheader("🔎 Búsqueda")
+
     n_results = st.slider(
         "Número de resultados a retornar",
         min_value=1,
         max_value=20,
         value=5
     )
-    
+
     similarity_threshold = st.slider(
         "Umbral de similitud",
         min_value=0.0,
@@ -137,32 +193,51 @@ with tab1:
     col1, col2 = st.columns(2)
     
     with col1:
-        st.subheader("2️⃣ Limpieza de Texto")
-        if st.button("Limpiar Texto", key="clean_text"):
+        st.subheader("2️⃣ Limpieza y Filtrado de Texto")
+        if st.button("Limpiar y Filtrar Texto", key="clean_text"):
             if "documents" not in st.session_state:
                 st.warning("⚠️ Primero carga los PDFs")
             else:
                 try:
-                    with st.spinner("Limpiando texto..."):
-                        extractor = TextExtractor()
+                    with st.spinner("Limpiando y filtrando texto..."):
+                        extractor = TextExtractor(
+                            filter_sections=filter_sections,
+                            remove_references=remove_references,
+                            remove_acknowledgments=remove_acknowledgments,
+                            remove_appendix=remove_appendix,
+                            remove_tables=remove_tables,
+                            remove_headers_footers=remove_headers_footers
+                        )
                         cleaned_docs = extractor.process_documents(st.session_state['documents'])
                         stats = extractor.get_stats(cleaned_docs)
-                        
+
                         st.session_state['cleaned_documents'] = cleaned_docs
                         st.session_state['extraction_stats'] = stats
-                        
-                        st.success("✓ Texto limpio")
+
+                        st.success("✓ Texto procesado")
                         st.metric("Reducción de caracteres", f"{stats['reduction_percentage']}%")
+
+                        if filter_sections:
+                            st.info(f"🗑️ Secciones removidas: {stats['total_sections_removed']}")
                 except Exception as e:
                     st.error(f"❌ Error: {str(e)}")
     
     with col2:
         if "extraction_stats" in st.session_state:
-            st.subheader("Estadísticas de Limpieza")
+            st.subheader("Estadísticas de Procesamiento")
             stats = st.session_state['extraction_stats']
             st.write(f"**Caracteres originales:** {stats['total_original_chars']:,}")
-            st.write(f"**Caracteres limpios:** {stats['total_cleaned_chars']:,}")
+            st.write(f"**Caracteres finales:** {stats['total_cleaned_chars']:,}")
             st.write(f"**Reducción:** {stats['reduction_percentage']}%")
+
+            if stats.get('sections_filtered', False):
+                st.write("---")
+                st.write("**Secciones filtradas:**")
+                st.write(f"- Referencias: {stats.get('total_references_removed', 0)}")
+                st.write(f"- Tablas: {stats.get('total_tables_removed', 0)}")
+                st.write(f"- Agradecimientos: {stats.get('total_acknowledgments_removed', 0)}")
+                st.write(f"- Apéndices: {stats.get('total_appendix_removed', 0)}")
+                st.write(f"- Headers/Footers: {stats.get('total_headers_footers_removed', 0)}")
     
     st.divider()
     
@@ -194,7 +269,9 @@ with tab1:
             st.write(f"**Total de chunks:** {stats['total_chunks']}")
             st.write(f"**Documentos únicos:** {stats['unique_documents']}")
             st.write(f"**Tamaño promedio:** {stats['avg_chunk_size']} caracteres")
+            st.write(f"**Tamaño mín/máx:** {stats['min_chunk_size']}/{stats['max_chunk_size']}")
             st.write(f"**Chunks/documento:** {stats['chunks_per_document']}")
+            st.write(f"**Párrafos/chunk:** {stats.get('avg_paragraphs_per_chunk', 'N/A')}")
     
     st.divider()
     
@@ -405,15 +482,26 @@ with tab4:
     │  (PyPDF2)                │
     └────────┬─────────────────┘
              │
-    ┌────────▼──────────────────┐
-    │  Limpieza y Normalización │
-    │  (regex, espacios)        │
-    └────────┬──────────────────┘
+    ┌────────▼────────────────────────────────┐
+    │  Limpieza y Normalización               │
+    │  (regex, espacios, URLs, emails)        │
+    └────────┬────────────────────────────────┘
              │
-    ┌────────▼─────────────────────────┐
-    │  Chunking                        │
-    │  (500 chars, overlap=50)         │
-    └────────┬─────────────────────────┘
+    ┌────────▼─────────────────────────────────┐
+    │  🆕 Detección y Filtrado de Secciones    │
+    │  - Referencias bibliográficas            │
+    │  - Tablas                                │
+    │  - Agradecimientos/Apéndices             │
+    │  - Headers/Footers                       │
+    └────────┬─────────────────────────────────┘
+             │
+    ┌────────▼──────────────────────────────────┐
+    │  🆕 Chunking Semántico Mejorado           │
+    │  - Respeta párrafos completos             │
+    │  - Divide por oraciones (no abreviaciones)│
+    │  - Overlap inteligente                    │
+    │  - Tamaño adaptativo                      │
+    └────────┬──────────────────────────────────┘
              │
     ┌────────▼──────────────────────────────────┐
     │  Extracción de Metadata                   │
@@ -448,8 +536,9 @@ with tab4:
     
     components = {
         "data_ingestion.py": "Carga PDFs desde carpeta local",
-        "text_extraction.py": "Limpia y normaliza texto",
-        "chunking.py": "Divide documentos en chunks",
+        "text_extraction.py": "Limpia, normaliza y filtra secciones de bajo valor",
+        "section_detector.py": "🆕 Detecta y remueve referencias, tablas, agradecimientos",
+        "chunking.py": "🆕 Divide documentos con chunking semántico (párrafos/oraciones)",
         "metadata_extraction.py": "Extrae pH, aW, microorganismos, etc.",
         "vector_db.py": "Maneja base vectorial con Chroma",
         "retriever.py": "Recupera chunks similares",
