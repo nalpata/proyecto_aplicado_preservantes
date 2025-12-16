@@ -147,8 +147,6 @@ Este proyecto demuestra el funcionamiento end-to-end de un sistema RAG, haciendo
 * Transparencia del proceso de recuperación
 * Reducción de alucinaciones mediante generación condicionada al contexto
 
-```
-
 ---
 
 ---
@@ -251,8 +249,6 @@ La aplicación **Streamlit**, en cambio, implementa una **demo final, modular y 
 * refleja el pipeline conceptual trabajado en el notebook,
 * permite ejecutar el sistema localmente,
 * y muestra de forma clara las etapas de ingesta, recuperación y generación.
-
-De esta forma, el notebook documenta el **proceso de investigación y toma de decisiones**, mientras que la aplicación presenta la **solución final ejecutable**.
 
 ---
 
