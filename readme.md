@@ -112,7 +112,6 @@ streamlit run app.py
 3. En la interfaz:
 
    * Configurar rutas y parámetros desde la barra lateral
-   * (Opcional) reprocesar los documentos
    * Ingresar una pregunta y observar:
 
      * Contexto recuperado
