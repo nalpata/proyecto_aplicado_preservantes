@@ -72,3 +72,6 @@ Clonar el repositorio y crear un entorno virtual:
 python -m venv .venv
 
 ---
+## Activar Entorno
+.venv\Scripts\activate
+
