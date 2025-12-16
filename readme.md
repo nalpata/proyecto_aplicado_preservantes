@@ -53,25 +53,101 @@ La interfaz Streamlit muestra visualmente estas tres etapas, permitiendo configu
 │   └── utils.py           # Funciones auxiliares
 │
 └── notebooks/             # Notebooks de experimentación (opcional)
+````
 
 ---
 
-## Requisitos
+## ⚙️ Requisitos
 
-Python 3.9 o superior
-
-Ejecución local (no depende de APIs externas)
-
-Modelo de lenguaje local en formato GGUF
+* Python 3.9 o superior
+* Ejecución local (no depende de APIs externas)
+* Modelo de lenguaje local en formato **GGUF**
 
 ---
-## Innstalacion
+
+## 📦 Instalación
 
 Clonar el repositorio y crear un entorno virtual:
 
+```bash
 python -m venv .venv
+```
+
+Activar el entorno:
+
+* **Windows**
+
+```bash
+.venv\Scripts\activate
+```
+
+* **Linux / Mac**
+
+```bash
+source .venv/bin/activate
+```
+
+Instalar dependencias:
+
+```bash
+pip install -r requirements.txt
+```
 
 ---
-## Activar Entorno
-.venv\Scripts\activate
 
+## ▶️ Ejecución de la aplicación
+
+1. Colocar los documentos PDF en la carpeta:
+
+```text
+data/pdfs/
+```
+
+2. Ejecutar la aplicación Streamlit:
+
+```bash
+streamlit run app.py
+```
+
+3. En la interfaz:
+
+   * Configurar rutas y parámetros desde la barra lateral
+   * (Opcional) reprocesar los documentos
+   * Ingresar una pregunta y observar:
+
+     * Contexto recuperado
+     * Respuesta generada
+     * Fuentes utilizadas
+
+---
+
+## 🧠 Modelo de lenguaje
+
+El sistema utiliza un **LLM local en formato GGUF**, cargado dinámicamente desde la ruta configurada en la interfaz.
+
+> **Nota:**
+> El archivo del modelo no se incluye en el repositorio debido a su tamaño.
+> La ruta al modelo se especifica directamente en la interfaz Streamlit.
+
+---
+
+## 🔁 Reproducibilidad
+
+* El proyecto es completamente reproducible en entorno local
+* No requiere conexión a servicios externos
+* Los índices generados se almacenan en `data/indexes/`
+* La modularización permite modificar o extender cada etapa del pipeline
+
+---
+
+## 📌 Observaciones finales
+
+Este proyecto demuestra el funcionamiento end-to-end de un sistema RAG, haciendo énfasis en:
+
+* Separación clara de responsabilidades
+* Transparencia del proceso de recuperación
+* Reducción de alucinaciones mediante generación condicionada al contexto
+
+```
+
+---
