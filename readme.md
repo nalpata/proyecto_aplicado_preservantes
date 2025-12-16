@@ -55,6 +55,7 @@ La interfaz Streamlit muestra visualmente estas tres etapas, permitiendo configu
 └── notebooks/             # Notebooks de experimentación (opcional)
 
 ---
+
 # ⚙️ Requisitos
 
 Python 3.9 o superior
@@ -69,3 +70,5 @@ Modelo de lenguaje local en formato GGUF
 Clonar el repositorio y crear un entorno virtual:
 
 python -m venv .venv
+
+---
