@@ -151,7 +151,7 @@ Este proyecto demuestra el funcionamiento end-to-end de un sistema RAG, haciendo
 
 ---
 
-## 📓 Trabajo experimental y evaluación (Notebook)
+## 📓 Trabajo experimental (Notebook)
 
 El notebook `Proyecto_1_Hito_2.ipynb` documenta el desarrollo completo del **Hito 2**, con foco en la **evaluación y mejora de la etapa de recuperación** dentro de un sistema RAG. A diferencia del Hito 1 (baseline), este trabajo se centra en **analizar las limitaciones del pipeline inicial y proponer mejoras fundamentadas**, evaluadas de forma sistemática.
 
@@ -239,17 +239,6 @@ Cada respuesta generada se guarda junto con:
 lo que garantiza **trazabilidad completa** y facilita el análisis posterior del comportamiento del sistema.
 
 ---
-
-### 6. Relación entre notebook y aplicación Streamlit
-
-El notebook cumple un rol **analítico y experimental**, donde se exploran múltiples variantes del sistema RAG y se comparan cuantitativamente sus resultados.
-
-La aplicación **Streamlit**, en cambio, implementa una **demo final, modular y reproducible**, que:
-
-* refleja el pipeline conceptual trabajado en el notebook,
-* permite ejecutar el sistema localmente,
-* y muestra de forma clara las etapas de ingesta, recuperación y generación.
-
 ---
 
 
