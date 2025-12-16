@@ -56,7 +56,7 @@ La interfaz Streamlit muestra visualmente estas tres etapas, permitiendo configu
 
 ---
 
-# ⚙️ Requisitos
+## Requisitos
 
 Python 3.9 o superior
 
@@ -64,8 +64,8 @@ Ejecución local (no depende de APIs externas)
 
 Modelo de lenguaje local en formato GGUF
 
-
-# 📦 Instalación
+---
+## Innstalacion
 
 Clonar el repositorio y crear un entorno virtual:
 
