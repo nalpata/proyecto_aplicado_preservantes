@@ -8,7 +8,7 @@ st.set_page_config(page_title="RAG Hito 2 - Demo", layout="wide")
 
 cfg = AppConfig()
 
-# ✅ ÚNICO AJUSTE: ruta por defecto del modelo GGUF (para evitar fallback)
+# ✅ Ruta por defecto del modelo GGUF (para evitar fallback)
 cfg.llm_model_path = r"C:\Users\Patricia Patiño\Documents\proyecto_aplicado_preservantes\models\mistral-7b-instruct-v0.2.Q4_K_M.gguf"
 
 st.title(" RAG Hito 2 – Presentación Final")
